@@ -3354,6 +3354,16 @@ class Core(commands.commands._RuleDropper, commands.Cog, CoreLogic):
         else:
             await ctx.send(_("This server is already being ignored."))
 
+    @ignore.command(name="allexcept")
+    async def ignore_all(self, ctx, channel: discord.TextChannel = None):
+        """Ignore all channels except a specified channel."""
+        channel = channel or ctx.channel
+        channels = set(ctx.guild.text_channels)
+        channels.remove(channel)
+        for channel in channels:
+            await self.bot._ignored_cache.set_ignored_channel(channel, True)
+        await ctx.send("Channels have been added to the ignore list.")
+
     @commands.group()
     @commands.guild_only()
     @checks.admin_or_permissions(manage_channels=True)
